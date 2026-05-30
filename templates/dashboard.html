@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h2>Welcome {{ username }} 🎉</h2>
+
+<a href="/add_house">➕ Add House</a> |
+<a href="/logout">🚪 Logout</a>
+
+<br><br>
+
+
+<form method="POST">
+    <input type="text" name="search" placeholder="Search house or location">
+    <button type="submit">Search</button>
+</form>
+
+<br>
+
+<h3>Your Houses</h3>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Location</th>
+        <th>Image</th>
+        <th>Action</th>
+    </tr>
+
+    {% for house in houses %}
+    <tr>
+        <td>{{ house[0] }}</td>   <!-- id -->
+        <td>{{ house[2] }}</td>   <!-- name -->
+        <td>{{ house[3] }}</td>   <!-- location -->
+        <td>
+            <img src="/static/uploads/{{ house[4] }}" width="100">
+        </td>
+        <td>
+            <a href="/edit_house/{{ house[0] }}">✏ Edit</a> |
+            <a href="/delete_house/{{ house[0] }}">🗑 Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+</body>
+</html>

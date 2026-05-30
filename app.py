@@ -1,0 +1,170 @@
+import os
+import sqlite3
+from flask import Flask, render_template, request, redirect, session, flash
+from werkzeug.security import generate_password_hash, check_password_hash
+
+app = Flask(__name__)
+app.secret_key = "mysecret123"
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+
+conn = sqlite3.connect('users.db')
+c = conn.cursor()
+
+c.execute('''
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    password TEXT
+)
+''')
+
+c.execute('''
+CREATE TABLE IF NOT EXISTS houses (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT,
+    name TEXT,
+    location TEXT,
+    image TEXT
+)
+''')
+
+conn.commit()
+conn.close()
+
+@app.route('/')
+def home():
+    return render_template("index.html")
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = generate_password_hash(request.form['password'])
+
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+
+        c.execute("INSERT INTO users (username, password) VALUES (?, ?)", (username, password))
+
+        conn.commit()
+        conn.close()
+
+        flash("Registered Successfully")
+        return redirect('/login')
+
+    return render_template("register.html")
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+
+        c.execute("SELECT * FROM users WHERE username=?", (username,))
+        user = c.fetchone()
+
+        conn.close()
+
+        if user and check_password_hash(user[2], password):
+            session['user'] = username
+            return redirect('/dashboard')
+        else:
+            return "Invalid Login"
+
+    return render_template("login.html")
+
+@app.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    if 'user' in session:
+        username = session['user']
+
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+
+        search = request.form.get('search')
+
+        if search:
+            c.execute("""
+            SELECT * FROM houses 
+            WHERE username=? AND (name LIKE ? OR location LIKE ?)
+            """, (username, f'%{search}%', f'%{search}%'))
+        else:
+            c.execute("SELECT * FROM houses WHERE username=?", (username,))
+
+        houses = c.fetchall()
+        conn.close()
+
+        return render_template("dashboard.html", username=username, houses=houses)
+    else:
+        return redirect('/login')
+
+@app.route('/logout')
+def logout():
+    session.pop('user', None)
+    return redirect('/login')
+
+@app.route('/add_house', methods=['GET', 'POST'])
+def add_house():
+    if request.method == 'POST':
+        name = request.form['house_name']
+        location = request.form['location']
+        image = request.files['image']
+
+        filename = image.filename
+        image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+        username = session['user']
+
+        conn = sqlite3.connect('users.db')
+        c = conn.cursor()
+
+        c.execute("INSERT INTO houses (username, name, location, image) VALUES (?, ?, ?, ?)",
+                  (username, name, location, filename))
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/dashboard')
+
+    return render_template("add_house.html")
+
+@app.route('/delete_house/<int:id>')
+def delete_house(id):
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+
+    c.execute("DELETE FROM houses WHERE id=?", (id,))
+
+    conn.commit()
+    conn.close()
+
+    return redirect('/dashboard')
+
+@app.route('/edit_house/<int:id>', methods=['GET', 'POST'])
+def edit_house(id):
+    conn = sqlite3.connect('users.db')
+    c = conn.cursor()
+
+    if request.method == 'POST':
+        name = request.form['house_name']
+        location = request.form['location']
+
+        c.execute("UPDATE houses SET name=?, location=? WHERE id=?", (name, location, id))
+
+        conn.commit()
+        conn.close()
+
+        return redirect('/dashboard')
+
+    c.execute("SELECT * FROM houses WHERE id=?", (id,))
+    house = c.fetchone()
+
+    conn.close()
+
+    return render_template("edit_house.html", house=house)
+
+if __name__ == "__main__":
+    app.run(debug=True)
