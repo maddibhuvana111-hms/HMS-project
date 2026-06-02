@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from flask import Flask, render_template, request, redirect, session, url_for
 import sqlite3
 import os
@@ -186,7 +185,7 @@ def delete_house(id):
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
-=======
+
 import os
 import sqlite3
 from flask import Flask, render_template, request, redirect, session, flash
@@ -357,4 +356,4 @@ def edit_house(id):
 
 if __name__ == "__main__":
     app.run(debug=True)
->>>>>>> 6041e1d0aefb2dc12ab9d0b68b7219b3a52bb762
+
