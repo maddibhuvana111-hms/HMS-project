@@ -55,10 +55,15 @@ def register():
 
         conn = get_db()
         c = conn.cursor()
-        c.execute("INSERT INTO users VALUES (?, ?)", (username, password))
-        conn.commit()
-        conn.close()
 
+        try:
+            c.execute("INSERT INTO users VALUES (?, ?)", (username, password))
+            conn.commit()
+        except:
+            conn.close()
+            return "Username already exists"
+
+        conn.close()
         return redirect("/login")
 
     return render_template("register.html")
