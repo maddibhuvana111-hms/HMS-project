@@ -49,6 +49,8 @@ def home():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    error = ""
+
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
@@ -56,17 +58,21 @@ def register():
         conn = get_db()
         c = conn.cursor()
 
-        try:
+    
+        c.execute("SELECT * FROM users WHERE username=?", (username,))
+        existing_user = c.fetchone()
+
+        if existing_user:
+            error = "Username already exists"
+        else:
             c.execute("INSERT INTO users VALUES (?, ?)", (username, password))
             conn.commit()
-        except:
             conn.close()
-            return "Username already exists"
+            return redirect("/login")
 
         conn.close()
-        return redirect("/login")
 
-    return render_template("register.html")
+    return render_template("register.html", error=error)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
