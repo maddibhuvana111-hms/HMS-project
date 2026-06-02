@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <h1>Welcome {{ session['user'] }}</h1>
+
+    <div class="top-links">
+        <a href="/add_house">Add House</a>
+        <a href="/logout" class="logout">Logout</a>
+    </div>
+
+    <div class="container">
+
+        {% for house in houses %}
+            <div class="house-card">
+
+                <h3>{{ house['name'] }}</h3>
+
+                <p><b>Location:</b> {{ house['location'] }}</p>
+
+                {% if house['image'] %}
+                    <img src="{{ url_for('static', filename='uploads/' + house['image']) }}">
+                {% else %}
+                    <p>No Image</p>
+                {% endif %}
+
+                <br><br>
+
+                <a class="btn" href="/edit_house/{{ house['id'] }}">Edit</a>
+                <a class="btn delete" href="/delete_house/{{ house['id'] }}">Delete</a>
+
+            </div>
+        {% endfor %}
+
+    </div>
+
+</body>
+</html>
