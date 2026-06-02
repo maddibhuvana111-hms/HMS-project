@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f6f8;
@@ -62,4 +63,39 @@ h1 {
 
 .btn.delete {
     background: red;
+=======
+body {
+    font-family: Arial;
+    text-align: center;
+    background: #f2f2f2;
+}
+
+h2 {
+    color: #333;
+}
+
+table {
+    margin: auto;
+    background: white;
+    border-collapse: collapse;
+}
+
+th {
+    background: #4CAF50;
+    color: white;
+}
+
+td, th {
+    padding: 10px;
+}
+
+a {
+    text-decoration: none;
+    color: blue;
+    font-weight: bold;
+}
+
+a:hover {
+    color: red;
+>>>>>>> 6041e1d0aefb2dc12ab9d0b68b7219b3a52bb762
 }

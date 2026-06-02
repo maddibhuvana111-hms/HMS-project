@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 flask
 gunicorn
+=======
+flask
+gunicorn
+>>>>>>> 6041e1d0aefb2dc12ab9d0b68b7219b3a52bb762
 werkzeug
