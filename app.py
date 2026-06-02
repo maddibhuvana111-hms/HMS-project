@@ -10,6 +10,8 @@ app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
+
+
 def get_db():
     conn = sqlite3.connect("users.db")
     conn.row_factory = sqlite3.Row
@@ -43,9 +45,11 @@ def create_tables():
 
 create_tables()
 
+
 @app.route("/")
 def home():
     return redirect("/login")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -58,11 +62,8 @@ def register():
         conn = get_db()
         c = conn.cursor()
 
-    
         c.execute("SELECT * FROM users WHERE username=?", (username,))
-        existing_user = c.fetchone()
-
-        if existing_user:
+        if c.fetchone():
             error = "Username already exists"
         else:
             c.execute("INSERT INTO users VALUES (?, ?)", (username, password))
@@ -73,6 +74,8 @@ def register():
         conn.close()
 
     return render_template("register.html", error=error)
+
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -94,10 +97,13 @@ def login():
 
     return render_template("login.html")
 
+
+
 @app.route("/logout")
 def logout():
     session.pop("user", None)
     return redirect("/login")
+
 
 @app.route("/dashboard")
 def dashboard():
@@ -121,22 +127,20 @@ def add_house():
         return redirect("/login")
 
     if request.method == "POST":
-        house_name = request.form.get("house_name")
-        location = request.form.get("location")
-        image = request.files.get("image")
+        name = request.form["house_name"]
+        location = request.form["location"]
+        image = request.files["image"]
 
         filename = ""
         if image and image.filename != "":
             filename = image.filename
             image.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
-        username = session["user"]
-
         conn = get_db()
         c = conn.cursor()
         c.execute(
             "INSERT INTO houses (username, name, location, image) VALUES (?, ?, ?, ?)",
-            (username, house_name, location, filename)
+            (session["user"], name, location, filename)
         )
         conn.commit()
         conn.close()
@@ -154,24 +158,25 @@ def edit_house(id):
     conn = get_db()
     c = conn.cursor()
 
-    if request.method == "POST":
-        name = request.form.get("house_name")
-        location = request.form.get("location")
+    c.execute("SELECT * FROM houses WHERE id=?", (id,))
+    house = c.fetchone()
 
-        c.execute(
-            "UPDATE houses SET name=?, location=? WHERE id=?",
-            (name, location, id)
-        )
+    if not house:
+        return "House not found"
+
+    if request.method == "POST":
+        name = request.form["house_name"]
+        location = request.form["location"]
+
+        c.execute("UPDATE houses SET name=?, location=? WHERE id=?", (name, location, id))
         conn.commit()
         conn.close()
 
         return redirect("/dashboard")
 
-    c.execute("SELECT * FROM houses WHERE id=?", (id,))
-    house = c.fetchone()
     conn.close()
-
     return render_template("edit_house.html", house=house)
+
 
 @app.route("/delete_house/<int:id>")
 def delete_house(id):
@@ -185,6 +190,7 @@ def delete_house(id):
     conn.close()
 
     return redirect("/dashboard")
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
