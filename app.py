@@ -105,21 +105,29 @@ def logout():
     return redirect("/login")
 
 
-@app.route("/dashboard")
+@app.route("/dashboard", methods=["GET", "POST"])
 def dashboard():
     if "user" not in session:
         return redirect("/login")
 
     username = session["user"]
+    search = request.form.get("search")
 
     conn = get_db()
     c = conn.cursor()
-    c.execute("SELECT * FROM houses WHERE username=?", (username,))
+
+    if search:
+        c.execute("""
+        SELECT * FROM houses 
+        WHERE username=? AND (name LIKE ? OR location LIKE ?)
+        """, (username, f"%{search}%", f"%{search}%"))
+    else:
+        c.execute("SELECT * FROM houses WHERE username=?", (username,))
+
     houses = c.fetchall()
     conn.close()
 
     return render_template("dashboard.html", houses=houses)
-
 
 @app.route("/add_house", methods=["GET", "POST"])
 def add_house():
