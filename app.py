@@ -5,7 +5,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "secret123"
 
-DATABASE_URL = "PASTE_YOUR_EXTERNAL_DATABASE_URL_HERE"
+DATABASE_URL = "your-copied-url"
 
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
