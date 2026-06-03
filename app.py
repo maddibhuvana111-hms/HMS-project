@@ -6,8 +6,7 @@ app = Flask(__name__)
 app.secret_key = "secret123"
 
 
-DATABASE_URL = "PASTE_YOUR_EXTERNAL_DATABASE_URL_HERE"
-
+DATABASE_URL = "your_copied_url_here"
 
 def get_db():
     return psycopg2.connect(DATABASE_URL)
