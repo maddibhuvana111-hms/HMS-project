@@ -3,95 +3,55 @@
 <head>
     <title>Dashboard</title>
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f8;
-        }
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        .header {
-            background: #1976d2;
-            color: white;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .top-buttons {
-            text-align: center;
-            margin: 20px;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-
-        .btn-add { background: green; }
-        .btn-logout { background: red; }
-
-        .search-box {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .card {
-            background: white;
-            width: 260px;
-            margin: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .card img {
-            width: 100%;
-            height: 150px;
-        }
-    </style>
 </head>
 
-<body>
+<body class="bg-light">
 
-<div class="header">
-    <h2>Welcome {{ session['user'] }}</h2>
-</div>
+<div class="container mt-4">
 
-<div class="top-buttons">
-    <a href="/add_house" class="btn btn-add">Add House</a>
-    <a href="/logout" class="btn btn-logout">Logout</a>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Welcome {{ session['user'] }}</h3>
+        <div>
+            <a href="/add_house" class="btn btn-success">Add House</a>
+            <a href="/logout" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
 
-<div class="search-box">
-    <form method="POST">
-        <input type="text" name="search" placeholder="Search..." style="padding:8px;">
-        <button type="submit">Search</button>
+    <!-- Search -->
+    <form method="POST" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="Search...">
+            <button class="btn btn-primary">Search</button>
+        </div>
     </form>
-</div>
 
-<div class="container">
-    {% for house in houses %}
-    <div class="card">
+    <div class="row">
 
-        {% if house['image'] %}
-        <img src="{{ url_for('static', filename='uploads/' + house['image']) }}">
-        {% endif %}
+        {% for house in houses %}
+        <div class="col-md-4">
+            <div class="card mb-4 shadow-sm">
 
-        <h3>{{ house['name'] }}</h3>
-        <p>{{ house['location'] }}</p>
+                {% if house['image'] %}
+                <img src="{{ url_for('static', filename='uploads/' + house['image']) }}" class="card-img-top">
+                {% endif %}
 
-        <a href="/edit_house/{{ house['id'] }}">Edit</a>
-        <a href="/delete_house/{{ house['id'] }}">Delete</a>
+                <div class="card-body text-center">
+                    <h5>{{ house['name'] }}</h5>
+                    <p>{{ house['location'] }}</p>
+
+                    <a href="/edit_house/{{ house['id'] }}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/delete_house/{{ house['id'] }}" class="btn btn-danger btn-sm">Delete</a>
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
 
     </div>
-    {% endfor %}
+
 </div>
 
 </body>
