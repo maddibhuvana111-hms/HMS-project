@@ -1,14 +1,64 @@
-<h2>Edit House</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit House</title>
 
-<form method="POST">
-    <input type="text" name="house_name" value="{{ house[1] }}" required>
-    <br><br>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 
-    <input type="text" name="location" value="{{ house[2] }}" required>
-    <br><br>
+    <style>
+        body {
+            background: #f4f6f9;
+            font-family: Arial;
+        }
 
-    <button type="submit">Update House</button>
-</form>
+        .container {
+            width: 350px;
+            margin: 80px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px #ccc;
+            text-align: center;
+        }
 
-<br>
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
 
+        button {
+            background: orange;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+        }
+
+        a {
+            display: block;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Edit House</h2>
+
+    <form method="POST">
+        <input type="text" name="house_name" value="{{ house.name }}" required>
+        <input type="text" name="location" value="{{ house.location }}" required>
+
+        <button type="submit">Update</button>
+    </form>
+
+    <a href="/dashboard">⬅ Back</a>
+</div>
+
+</body>
+</html>
