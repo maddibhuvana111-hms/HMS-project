@@ -4,46 +4,110 @@
     <title>Dashboard</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            margin: 0;
+        }
+
+        .header {
+            background: #1976d2;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .top-buttons {
+            text-align: center;
+            margin: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+        }
+
+        .btn-add { background: green; }
+        .btn-logout { background: red; }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .card {
+            background: white;
+            width: 250px;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .card h3 {
+            margin: 10px 0;
+        }
+
+        .card p {
+            color: gray;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 5px;
+            display: inline-block;
+        }
+
+        .edit { background: #1976d2; }
+        .delete { background: red; }
+
+    </style>
 </head>
 
 <body>
 
-    <h1 style="background:#1976d2; color:white; padding:15px; text-align:center;">
-        Welcome {{ session['user'] }}
-    </h1>
-
-    <div style="text-align:center; margin:20px;">
-        <a href="/add_house" style="background:green; color:white; padding:10px 20px; text-decoration:none; border-radius:5px;">Add House</a>
-
-        <a href="/logout" style="background:red; color:white; padding:10px 20px; text-decoration:none; border-radius:5px; margin-left:10px;">Logout</a>
+    <div class="header">
+        <h2>Welcome {{ session['user'] }}</h2>
     </div>
 
-    <div style="display:flex; flex-wrap:wrap; justify-content:center; gap:20px;">
+    <div class="top-buttons">
+        <a href="/add_house" class="btn btn-add">Add House</a>
+        <a href="/logout" class="btn btn-logout">Logout</a>
+    </div>
+
+    <div class="container">
 
         {% for house in houses %}
-        <div style="background:#f5f5f5; padding:20px; border-radius:10px; width:250px; text-align:center; box-shadow:0 0 10px rgba(0,0,0,0.1);">
-
-            <h3>{{ house['name'] }}</h3>
-
-            <p><b>Location:</b> {{ house['location'] }}</p>
+        <div class="card">
 
             {% if house['image'] %}
-                <img src="{{ url_for('static', filename='uploads/' + house['image']) }}" width="200">
+                <img src="{{ url_for('static', filename='uploads/' + house['image']) }}">
             {% else %}
                 <p>No Image</p>
             {% endif %}
 
-            <br><br>
+            <h3>{{ house['name'] }}</h3>
+            <p>{{ house['location'] }}</p>
 
-            <a href="/edit_house/{{ house['id'] }}" 
-               style="background:#1976d2; color:white; padding:5px 10px; text-decoration:none; border-radius:5px;">
-               Edit
-            </a>
-
-            <a href="/delete_house/{{ house['id'] }}" 
-               style="background:red; color:white; padding:5px 10px; text-decoration:none; border-radius:5px; margin-left:10px;">
-               Delete
-            </a>
+            <a href="/edit_house/{{ house['id'] }}" class="action-btn edit">Edit</a>
+            <a href="/delete_house/{{ house['id'] }}" class="action-btn delete">Delete</a>
 
         </div>
         {% endfor %}
