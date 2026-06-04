@@ -53,17 +53,17 @@
                     {% endif %}
 
                     <div class="card-body text-center">
-                        <h5>{{ house[2] }}</h5>
-                        <p>{{ house[3] }}</p>
+                    <h5>{{ house[2] }}</h5>
+                    <p>{{ house[3] }}</p>
 
-                        <a href="/edit_house/{{ house[0] }}" class="btn btn-primary btn-sm">
-                            Edit
-                        </a>
+                    <a href="/edit_house/{{ house[0] }}" class="btn btn-primary btn-sm">
+                    Edit
+                    </a>
 
-                        <button onclick="confirmDelete('{{ house[0] }}')">
-                                class="btn btn-danger btn-sm">
-                            Delete
-                        </button>
+                    <button onclick="confirmDelete({{ house[0] }})"
+                    class="btn btn-danger btn-sm">
+                     Delete
+                    </button>
                     </div>
 
                 </div>
