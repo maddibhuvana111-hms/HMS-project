@@ -5,8 +5,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "secret123"
 
-DATABASE_URL = postgresql://houses_user:J0zPCJ7niaz8MJpIbQhmlFVzwo3yRDQi@dpg-d8g55ud7vvec739r53vg-a.oregon-postgres.render.com/houses_iarb
-
+DATABASE_URL ="postgresql://houses_user:J0zPCJ7niaz8MJpIbQhmlFVzwo3yRDQi@dpg-d8g55ud7vvec739r53vg-a.oregon-postgres.render.com/houses_iarb"
 UPLOAD_FOLDER = "static/uploads"
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
